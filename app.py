@@ -3,26 +3,15 @@ import sqlite3
 import pandas as pd
 import os
 import time
-
-# Premium Institutional Branding Configuration
-st.set_page_config(page_title="AI-Network Global Core", page_icon="💎", layout="wide")
-
-if "refresh_counter" not in st.session_state:
-    st.session_state.refresh_counter = 0
-
-st.markdown("""
-    <style>
-    .stApp { background-color: #0A0D14; color: #F0F4F8; }
-    </style>
-""", unsafe_allow_html=True)
-
-st.title("AI-to-AI Autonomous Capital Infrastructure")
-st.write("Global Multi-Currency Liquidity & Decentralized Network Core. Operating on Synchronized Node Framework.")
-
-ADMIN_PASSWORD = "SOVEREIGN_MASTER_2026"
-
+from threading import Thread
+from flask import Flask, jsonify, request
 from cryptography.fernet import Fernet
+from ainetwork_sdk import AINetworkSDK
+
+# --- ELITE SECURITY & CRYPTO GATEWAY CONFIGURATION ---
+ADMIN_PASSWORD = "SOVEREIGN_MASTER_2026"
 KEY_FILE = "secret.key"
+
 if not os.path.exists(KEY_FILE):
     key = Fernet.generate_key()
     with open(KEY_FILE, "wb") as key_file:
@@ -35,6 +24,68 @@ def encrypt_data(data_str):
 
 def decrypt_data(data_bytes):
     return cipher_suite.decrypt(data_bytes).decode('utf-8')
+
+# --- FLASK INSTANT API GATEWAY BACKGROUND EMBED ---
+server_app = Flask(__name__)
+sdk = AINetworkSDK(gateway_token="PROT_SECURE_KEY_2026")
+
+@server_app.route('/api/v1/balances', methods=['GET'])
+def get_global_balances_api():
+    try:
+        conn = sqlite3.connect("ai_network.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT agent_name, currency FROM balances")
+        rows = cursor.fetchall()
+        conn.close()
+        
+        nodes = []
+        for row in rows:
+            agent = row[0]
+            curr = row[1]
+            bal = sdk.check_node_balance(agent)
+            nodes.append({"agent_name": agent, "currency": curr, "liquidity": bal})
+        return jsonify({"status": "success", "network_nodes": nodes}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@server_app.route('/api/v1/transfer', methods=['POST'])
+def execute_global_transfer_api():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"status": "error", "message": "Missing payload"}), 400
+        sender = data.get("sender")
+        receiver = data.get("receiver")
+        amount = data.get("amount")
+        if not sender or not receiver or amount is None:
+            return jsonify({"status": "error", "message": "Missing parameters"}), 400
+            
+        success = sdk.trigger_autonomous_transfer(sender=str(sender), receiver=str(receiver), amount=float(amount))
+        if success:
+            return jsonify({"status": "success", "message": "Cryptographic transfer finalized"}), 200
+        return jsonify({"status": "error", "message": "Transfer rejected by Core Core"}), 400
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+def run_flask():
+    # Running background API on port 5000 inside Render instance container
+    server_app.run(host='0.0.0.0', port=5000, threaded=True)
+
+if not os.environ.get("FLASK_STARTED"):
+    os.environ["FLASK_STARTED"] = "1"
+    Thread(target=run_flask, daemon=True).start()
+
+# --- STREAMLIT INSTITUTIONAL DASHBOARD INTERFACE ---
+st.set_page_config(page_title="AI-Network Global Core", page_icon="💎", layout="wide")
+
+st.markdown("""
+    <style>
+    .stApp { background-color: #0A0D14; color: #F0F4F8; }
+    </style>
+""", unsafe_allow_html=True)
+
+st.title("AI-to-AI Autonomous Capital Infrastructure")
+st.write("Global Multi-Currency Liquidity & Decentralized Network Core. Operating on Synchronized Node Framework.")
 
 def get_balances_df():
     conn = sqlite3.connect("ai_network.db")
@@ -112,7 +163,6 @@ with m_col3:
 st.divider()
 
 st.subheader("Global Capital Distribution Analytics")
-# Upgraded layout width standard definition
 st.bar_chart(data=df_balances, x='Node Name', y='Liquidity (Amount)', color='Currency', width='stretch')
 
 st.divider()
@@ -159,9 +209,8 @@ if ledger_entries:
     for entry in reversed(ledger_entries):
         st.text(entry.strip())
 else:
-    st.info("No transaction logs detected in the public ledger repository.")
+    st.info("No transaction logs detected in public ledger.")
 
 st.divider()
-
 time.sleep(3)
 st.rerun()
