@@ -1,0 +1,24 @@
+name: Core Infrastructure Stress Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository Code
+      uses: actions/checkout@v3
+
+    - name: Set Up Python Environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Architecture Dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Execute Automated Core Stress Test
+      run: |
+        python stress_test.py
