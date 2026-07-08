@@ -19,6 +19,11 @@ jobs:
       run: |
         pip install -r requirements.txt
 
+    - name: Pre-Configure Mock Key And Environment
+      run: |
+        echo "U09WRVJDSUdOX01BU1RFUl8yMDI2X0tFWV9URVNUMTIzNDU=" > secret.key
+        touch ai_network.db ledger.txt
+
     - name: Execute Automated Core Stress Test
       run: |
         python stress_test.py
