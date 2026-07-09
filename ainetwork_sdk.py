@@ -28,9 +28,13 @@ class AINetworkSDK:
             raise ValueError("SOLANA_PRIVATE_KEY not found in .env")
         key_bytes = base58.b58decode(private_key)
         self.keypair = Keypair.from_bytes(key_bytes)
-        if not os.path.exists(key_file_path):
-            raise FileNotFoundError("secret.key not found.")
-        self.cipher_suite = Fernet(open(key_file_path, "rb").read())
+        fernet_key = os.getenv("FERNET_KEY")
+        if fernet_key:
+            self.cipher_suite = Fernet(fernet_key.encode())
+        elif os.path.exists(key_file_path):
+            self.cipher_suite = Fernet(open(key_file_path, "rb").read())
+        else:
+            raise FileNotFoundError("No Fernet key found.")
 
     def _encrypt(self, data_str: str) -> bytes:
         return self.cipher_suite.encrypt(data_str.encode('utf-8'))
