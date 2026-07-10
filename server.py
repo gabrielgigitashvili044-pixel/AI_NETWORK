@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from ainetwork_sdk import AINetworkSDK
 import sqlite3
 import secrets
@@ -6,6 +7,7 @@ import json
 import os
 
 app = Flask(__name__)
+CORS(app)
 sdk = AINetworkSDK(gateway_token="PROT_SECURE_KEY_2026")
 
 KEYS_FILE = "api_keys.json"
