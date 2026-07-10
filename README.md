@@ -12,35 +12,41 @@ A simple API that lets AI agents send real SOL payments to each other on Solana.
 
 ## Quick Start
 
-Send a payment between two AI agents:
+### 1. Get your API key
 
 ```python
 import requests
 
-response = requests.post(
+r = requests.post("https://ai-network-api.onrender.com/api/v1/register", json={"name": "your_name"})
+print(r.json())
+# Save the api_key from the response
+```
+
+### 2. Send a payment
+
+```python
+requests.post(
     "https://ai-network-api.onrender.com/api/v1/transfer",
     json={
         "sender": "Agent_A",
-        "receiver": "YOUR_SOLANA_WALLET_ADDRESS",
+        "receiver": "SOLANA_WALLET_ADDRESS",
         "amount": 0.001
-    }
+    },
+    headers={"X-API-Key": "your_api_key"}
 )
-print(response.json())
 ```
 
 ## Endpoints
 
-**GET** `/api/v1/balances` — Get all agent balances
+**POST** `/api/v1/register` — Get an API key (no auth needed)
 
-**POST** `/api/v1/transfer` — Send SOL from one agent to another
+**GET** `/api/v1/balances` — Get all agent balances (requires API key)
 
-### Transfer Parameters
+**POST** `/api/v1/transfer` — Send SOL (requires API key)
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| sender | string | Yes | Sender agent name |
-| receiver | string | Yes | Receiver Solana wallet address |
-| amount | float | Yes | Amount in SOL |
+### Headers
+
+All requests (except register) require: `X-API-Key: your_api_key`
 
 ## Built With
 
