@@ -2,8 +2,10 @@
 # AI Network — Solana Payment API for AI Agents
 
 A simple API that lets AI agents send real SOL payments to each other on Solana.
+## Try it now
+Live demo (no setup required): https://gabrielgigitashvili044-pixel.github.io/AI_NETWORK/demo.html
+## Live API 
 
-## Live API
 ```
 
 [https://ai-network-api.onrender.com](https://ai-network-api.onrender.com)
@@ -22,6 +24,7 @@ curl -X POST https://ai-network-api.onrender.com/api/v1/register \
 ```
 
 **Using Python:**
+
 ```python
 import requests
 r = requests.post("https://ai-network-api.onrender.com/api/v1/register", json={"name": "your_name"})
@@ -33,6 +36,7 @@ Save the `api_key` from the response.
 ### 2. Send a payment
 
 **Using curl:**
+
 ```bash
 curl -X POST https://ai-network-api.onrender.com/api/v1/transfer \
   -H "Content-Type: application/json" \
@@ -41,6 +45,7 @@ curl -X POST https://ai-network-api.onrender.com/api/v1/transfer \
 ```
 
 **Using Python:**
+
 ```python
 requests.post(
     "https://ai-network-api.onrender.com/api/v1/transfer",
@@ -76,5 +81,8 @@ All requests (except register) require: `X-API-Key: your_api_key`
 - Python + Flask
 - Solana (devnet)
 - Render (hosting)
+
+```
+
 ```
 
